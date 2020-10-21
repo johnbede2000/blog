@@ -5,12 +5,15 @@
 <meta name='viewport' content='width=device-width initial-scale=1'>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="blog-style.css">
+<link href="prism.css" rel="stylesheet"/>
 <title>Differences in Arrays</title>
-    <meta name="Description" content="How to compare two arrays and return a new array with any items found in one not both."> -->
+    <meta name="Description" content="How to compare two arrays and return a new array with any items found in one not both.">
     <meta name="Keywords" content="javascript, arrays, compare, differences">
     <meta name="author" content="www.johnbe.de">
 </head>
-<body><h1>Differences in Arrays</h1>
+<body>
+<div class='container'>    
+<h1>Differences in Arrays</h1>
 <p>21/10/20</p>
 <h2>Challenge</h2>
 <p>&quot;Compare two arrays and return a new array with any items only found in one of the two given arrays, but not both.&quot; - freeCodeCamp (Intermediate Algorithm Scripting)</p>
@@ -35,7 +38,7 @@
 
 </ol>
 <h2>Solution</h2>
-<pre><code class='language-javascript' lang='javascript'>function diffInArrays(arr1, arr2) {
+<pre><code class='language-javascript'>function diffInArrays(arr1, arr2) {
     let returnedArr = [];
     
     arr1.forEach(arr1Elem =&gt; {
@@ -53,5 +56,7 @@
     return returnedArr;
 }
 </code></pre>
+</div>
+<script src="prism.js"></script>
 </body>
 </html>
