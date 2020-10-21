@@ -43,4 +43,6 @@ h2 {
 
 code {
     background-color: #dadada;
+    padding-left: 2px;
+    padding-right: 2px;
 }
