@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>Differences in Arrays</title></head>
+<body><h1>Differences in Arrays</h1>
+<p>21/10/20</p>
+<h2>Challenge</h2>
+<p>&quot;Compare two arrays and return a new array with any items only found in one of the two given arrays, but not both.&quot; - freeCodeCamp (Intermediate Algorithm Scripting)</p>
+<h2>Description of Solution</h2>
+<ol start='' >
+<li><p>First we&#39;ll create an empty array to return the selected elements in: <code>let returnedArr = [];</code>.</p>
+</li>
+<li><p>Next we&#39;ll loop through one of the arrays, and compare each element with the other array. There are different ways to loop; the <code>forEach()</code> method is one way. So <code>arr1.forEach(insert function here)</code></p>
+</li>
+<li><p>The function we&#39;ll perform on each element from arr1 is: <em>&#39;1) is it the same as any of the elements in arr2? 2) If it&#39;s not, then we&#39;ll push it to our returned array.&#39;</em></p>
+<ol start='' >
+<li>To compare with all of the elements in arr2, we could use the <code>some()</code> method. So <code>arr2.some(arr2Elem =&gt; arr1Elem === arr2Elem)</code></li>
+<li>If this returns false, then we can move onto pushing the element. So we need to wrap the above in an if statement. If the above returns true we&#39;re not going to do anything. So it&#39;s easier to only write the code for false, so let&#39;s reverse the logic to <code>arr1Elem !== arr2Elem</code> - this would need to be the case for all elements not just some. So we&#39;ll use the <code>every()</code> method instead. <code>arr2every(arr2Elem =&gt; arr1Elem !== arr2Elem)</code></li>
+<li>and finally the code to execute when this is the case will be <code>returnedArr.push(arr1[elem])</code></li>
+
+</ol>
+</li>
+<li><p>We&#39;ll now need to do steps 2 and 3 the other way round as well! Comparing array2 with array1.</p>
+</li>
+<li><p>Finally we need to return <code>returnedArr</code>.</p>
+</li>
+
+</ol>
+<h2>Solution</h2>
+<pre><code class='language-javascript' lang='javascript'>function diffInArrays(arr1, arr2) {
+    let returnedArr = [];
+    
+    arr1.forEach(arr1Elem =&gt; {
+        if (arr2.every(arr2elem =&gt; arr1Elem !== arr2elem)) {
+            returnedArr.push(arr1Elem);
+        };
+    });
+    
+    arr2.forEach(arr2Elem =&gt; {
+        if (arr1.every(arr1Elem =&gt; arr2Elem !== arr1Elem)) {
+            returnedArr.push(arr2Elem);
+        };
+    });
+    
+    return returnedArr;
+}
+</code></pre>
+</body>
+</html>
