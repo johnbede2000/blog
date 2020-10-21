@@ -50,3 +50,14 @@ code {
 .token.operator {
     background: none;
 }
+
+.blog-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.post-date {
+    font-weight: normal;
+}
