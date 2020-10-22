@@ -13,22 +13,20 @@
 </head>
 <body>
 <div class='container'>    
-    <h1>Remove Arguments from Array</h1>
-    <h2>Challenge</h2>
-    <p>You will be provided with an initial array (the first argument in the destroyer function), followed by one or more arguments. Remove all elements from the initial array that are of the same value as these arguments.</p>
-    <h2>Description of my solution</h2>
-    <ol>
-    <li>We don&#39;t know how many arguments will be provided, so we&#39;ll use the rest parameter <code>...args</code>. This will provide an array that we can use in the function.</li>
-    <li>We&#39;ll iterate through every element in the original array to see if it&#39;s listed in the args array. We could use <code>forEach()</code> with an if statement to push elements that pass the test to a new array (which the function returns).. Or instead we can just use the <code>filter()</code> method which will do the same thing with less lines. (The filter method creates a new array and doesn&#39;t modify the original.)</li>
-    <li>The way that we&#39;ll see if the element is present as one of the arguments: if it <em>is</em> present, then the <code>indexOf</code> method will return its index. If the element is <em>not</em> present, the <code>indexOf</code> method will return -1. So to write this last sentence the other way round, if the element <em>does</em> have an index of -1, we know it&#39;s <em>not</em> present. And therefore safe to keep in our filtered array.</li>
-    
-    </ol>
-    <h2>My Solution</h2>
-    <pre><code class='language-javascript'>function removeArgs(arr, ...args) {
-      return arr.filter(elem =&gt; (args.indexOf(elem) == -1));    
-    }
-    </code></pre>
-    <p>&nbsp;</p>
+<h1>Remove Arguments from Array</h1>
+<h2>Challenge</h2>
+<p>You will be provided with an initial array (the first argument in the destroyer function), followed by one or more arguments. Remove all elements from the initial array that are of the same value as these arguments.</p>
+<h2>Description of my solution</h2>
+<ol>
+<li>We don&#39;t know how many arguments will be provided, so we&#39;ll use the rest parameter <code>...args</code>. This will provide an array that we can use inside the function.</li>
+<li>We&#39;ll iterate through every element in the initial array to see if it&#39;s listed in the args array. We could use <code>forEach()</code> with an if statement to push elements that pass to a new array (which the function returns).. Or instead we can just use the <code>filter()</code> method which will do the same thing with less lines. (The filter method creates a new array and doesn&#39;t modify the original.)</li>
+<li>The way that we&#39;ll see if the element is present as one of the arguments: if it <em>is</em> present, then the <code>indexOf</code> method will return its index. If the element is <em>not</em> present, the <code>indexOf</code> method will return -1. So to write this last sentence the other way round, if the element <em>does</em> have an index of -1, we know it&#39;s <em>not</em> present. And therefore safe to keep in our filtered array.</li>
+
+</ol>
+<h2>My Solution</h2>
+<pre><code class='language-javascript'>function removeArgs(arr, ...args) {
+    return arr.filter(elem =&gt; (args.indexOf(elem) == -1));
+}</code></pre>
 
 
 </div>
