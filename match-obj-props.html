@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width initial-scale=1'>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<link href="prism.css" rel="stylesheet"/>
+<link rel="stylesheet" href="blog-style.css">
+<title>Match Object Properties</title>
+    <meta name="Description" content="Compare properties between objects provided in an array, and a source object.">
+    <meta name="Keywords" content="javascript, arrays, compare, objects, properties">
+    <meta name="author" content="www.johnbe.de">
+</head>
+<body>
+<div class='container'>    
+
+<h1>Matching Object Properties</h1>
+<p>23/10/20</p>
+<h2>Challenge</h2>
+<p>Make a function that looks through an array of objects (first argument, &#39;collection&#39;) and returns an array of all objects that have matching name and value pairs with the second argument, an object (&#39;source&#39;). Each name and value pair of the source object has to be present in the object from the collection if it is to be included in the returned array.</p>
+<h2>Description of my solution</h2>
+<p>I&#39;ll call the first argument <code>collArr</code>. I&#39;ll call the second argument <code>srcObj</code>. So: <code>function matchProps(collArr, srcObj) {</code>.</p>
+<ol>
+<li>We want to compare properties in the srcObj, with properties in each object within collArr one at a time. So we&#39;ll iterate through the collArr to take each collObj at a time.</li>
+<li>We want to compare the properties. In order to do so, we need to be able to reference the property key/name. If we reference the actual property (by using a for...in loop to iterate through the srcObj) we&#39;d actually be referencing the value it holds. So instead we want to be able to reference the string. We can obtain this with Object.keys(srcObj)</li>
+<li>We want to see if the properties are the same, so we can now use a comparison collObj[keyName] === srcObj[keyName]. But we need to make sure that <em>all</em> properties are present. Therefore we&#39;ll iterate through the srcKeyNames using the every() method. The every method will return true if the statement is correct for every source object key name.</li>
+<li>If the method returns true for the collection object at hand, then this object can be pushed to a returned array.</li>
+<li>Once the function has iterated over all collection objects, remember to return the returned array!</li>
+
+</ol>
+<h2>My Solution</h2>
+<pre><code class='language-javascript' lang='javascript'>function matchProps(collArr, srcObj) {
+    let srcKeyNames = Object.keys(srcObj);
+    let returnedArr = [];
+    
+    collArr.forEach(collObj =&gt; {
+        if (srcKeyNames.every(currSrcKey =&gt; collObj[currSrcKey] === srcObj[currSrcKey])) {
+            returnedArr.push(collObj);
+            };
+    });
+    return returnedArr;
+}
+</code></pre>
+
+</div>
+<script src="prism.js"></script>
+</body>
+</html>
