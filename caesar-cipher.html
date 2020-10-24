@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width initial-scale=1'>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<link href="prism.css" rel="stylesheet"/>
+<link rel="stylesheet" href="blog-style.css">
+<!-- <title>Differences in Arrays</title>
+    <meta name="Description" content="How to compare two arrays and return a new array with any items found in one not both.">
+    <meta name="Keywords" content="javascript, arrays, compare, differences"> -->
+    <meta name="author" content="www.johnbe.de">
+</head>
+<body>
+<div class='container'>    
+
+<h1>Caesar Cipher</h1>
+<h2>Challenge</h2>
+<p>A Caesar cipher is an encryption technique. It is a type of substitution cipher in which each letter in the plaintext is replaced by a letter some fixed number of positions down the alphabet. For example, with a left (or negative) shift of 3, D would be replaced by A, E would become B, and so on.</p>
+<p>Write a function that takes a string to be encoded and a shift factor and then returns the encoded string. The cipher should retain capitalization; should <em>not</em> shift punctuation; the shift should wrap around the alphabet; and negative numbers should work as well.</p>
+<h2>Maths: Positive shift</h2>
+<p>To make it easier (for me) to think through the maths, let&#39;s assume that a = <code>code</code> 1, z = <code>code</code> 26. I&#39;ll also assume that we&#39;re only dealing with lowercase letters.</p>
+<h3>No looping</h3>
+<p>input + shift = answer</p>
+<h3>Looping</h3>
+<p>The last letter of alphabet = <code>code</code> 26. </p>
+<p>[picture]</p>
+<p>For a positive shift, if the shift number is higher than the distance between the input code and 26 then we&#39;ll need to loop. In my solution we&#39;ll get that distance simply by 26 minus input.</p>
+<p>So now assuming that we need to loop around, as long as the shift is less than 26, then the following maths would work:</p>
+<p>(input - 26) + shift</p>
+<p>e.g. input = &#39;x&#39;, shift = 4: (24 - 26) + 4 = 2 // &#39;b&#39;, correct</p>
+<p>But what if the shift is more than 26 but less than 52? Every time the number gets above 26, we&#39;d want to minus 26. So that a shift of 30 would go 26 places to the same letter (effectively moving 0 places), then 4 more. Let&#39;s say the input is still &#39;x&#39; <code>code</code> = 24, but the shift is now 30:</p>
+<p>(input - 26) + (shift-26)</p>
+<p>(24 - 26) + (30-26) = 2 // &#39;b&#39;, correct!</p>
+<p>But now what if the shift is higher than 26, and also higher than 52 or any other multiple of 26?</p>
+<p>We want to keep taking away complete 26s, and see what number lower than 26 is left over. We could use a loop which continues removing 26s while the remainder is more than 27. Or we can just use the JavaScript modulus operator <code>%</code> to do the same.</p>
+<p>So in our Maths we&#39;ll do <strong>(input-26) + (shift % 26)</strong>. Let&#39;s say the shift is 56.</p>
+<p>e.g. (24 - 26) + (56 % 26) = 2 // &#39;b&#39;, correct!</p>
+<p>There have been some assumptions to work into the solution:</p>
+<ol start='' >
+<li>We assumed that the code for numbers actually runs from 1-26. But that would be easy enough to correct by taking the code and minus one less than &quot;the number that &#39;a&#39; actually is&quot;. This would make &#39;a&#39; = <code>code</code> 1. Then use the same maths.</li>
+<li>We assumed that letters will only be lowercase. Actually they might be uppercase, which we want to retain. In which case take the <code>code</code> and remove one less than &quot;the number that &#39;A&#39; actually is&quot;. Then use the same maths.</li>
+
+</ol>
+<p>We can solve both of these two assumptions at once: the number to minus. If the <code>code</code> is in a-z range then the number to minus is 96, and if the <code>code</code> is in the A-Z then the number to minus is 64.</p>
+<p>(By the way we&#39;re only talking about the alphabet used in English which has 26 letters before looping around. Could presumably add in a parameter for that, but I think fine to leave this assumption in.)</p>
+<p>Another requirement about punctuation - it will be easy enough to filter out punctuation to retain, by testing the original <code>code</code> value.</p>
+<h2>Maths: Negative shift</h2>
+<h3>No looping</h3>
+<p>input + negShift = answer</p>
+<p>4 + -1 = 3</p>
+<h3>Looping</h3>
+<p>We need to loop if the <em>absolute value</em> (effectively making the negative number a positive number e.g. -1 is 1) of the negShift number is larger than or equal to the input code, because that would bring it lower than 1. (For example input <code>code</code> 1, negative shift of 1: 1 moving 1 place back = 0.) We can use the JavaScript method Maths.abs() to get the absolute value to use in this way to test whether we need to loop.</p>
+<p>Now we&#39;re moving &#39;leftwards&#39; whenever the code gets to 0 we want it to loop back to 26, i.e. add 26. So with this taken into account, the above positive shift maths for looping once should work for negative shifts looping once too:</p>
+<p>(input <strong>+</strong> 26) + negShift... or (input <strong>+</strong> 26) - (abs value of negShift)</p>
+<p>(2+26) - 3 = 25 // &#39;y&#39;, correct</p>
+<p>Now for looping more than once. Just like the positive shift maths, we don&#39;t need the huge number of shift, we want to keep removing whole 26s and see what number less than 26 is left. </p>
+<p>(input + 26) - (abs value of negShift % 26)</p>
+<p>For example if input is 5, and shift is -56, we&#39;d want the result to be 1, &#39;a&#39;.</p>
+<p>(5+26) - (56 % 26) = 1 // &#39;a&#39;, correct!</p>
+<p>However, (5+26) - (29 % 26) = 31-3 = 29 // incorrect!!</p>
+<p>I&#39;m not sure why, but I can see that the correct answer needs to wrap as well (using %26), so:</p>
+<p><strong>((input + 26) - (abs value of negShift % 26)) % 26</strong></p>
+<p>((5+26) - (29 % 26)) % 26 = 3 // &#39;c&#39;, correct!</p>
+<h3>Check back on positive shifts</h3>
+<p>This final %26 on the end, is that something I missed for positive shift too? Is there any example which results in a number higher than 26?</p>
+<p>What input and shift would be needed to produce (input-26) + (shift % 26) = 29? Well considering shift % 26 could never result in anything higher than 25 whatever the shift, we&#39;d need to only worry about the input. 29 = 25 + (30-26)... an input of 30 will never be passed into the modify function, so it seems that the positive shift looping doesn&#39;t need this extra %26 on the end. For some reason negative shift looping does.</p>
+<h3>Finished maths</h3>
+<p>So I could just have two functions, one for positive shifts and one for negative shifts, with an if statement sending the character to the appropriate one.</p>
+<h2>Description of my solution</h2>
+<p>Split the input string into an array of individual characters, so that we can iterate through the characters to deal with one at a time. Use the map() method to iterate - this creates a new array which will contain the modified characters.</p>
+<p>Convert the string character into a number <code>code</code>. Test if it&#39;s a letter by testing the range for lowercase and uppercase letters. If it&#39;s not a letter then return it unmodified to the mapped array.</p>
+<p>If it&#39;s lowercase then minus the number that a-z range starts at, to make <code>code</code> for &#39;a&#39; = 1 and &#39;b&#39; = 2 etc. If it&#39;s uppercase then minus the number that A-Z starts at, to make <code>code</code> for &#39;A&#39; = 1 and &#39;B&#39; = 2 etc.</p>
+<p>Now check whether the shift number is positive or minus. Send the <code>code</code> to the appropriate maths explained above. After the maths has been performed, we need to add the appropriate numbers back again, before converting <code>code</code> to a string.</p>
+<p>The modifying function then returns the character to the mapped array. (At this point we can catch if the shift is 0, the function will just return the character unmodified.) Finally we just need to join the mapped array back together and return the modified string.</p>
+<h2>My Solution</h2>
+<pre><code class='language-javascript' lang='javascript'>function caesar(inputStr, shiftNum) {
+    function prelim(char) {
+        // test whether char is uppercase letter, lowercase letter, or not a letter
+        let code = char.charCodeAt();
+        if (code &gt;= 65 &amp;&amp; code &lt;= 90) {
+            let myCode = code - 64; // make &#39;A&#39; = 1 for modify function
+            return String.fromCharCode(modify(myCode) + 64);
+        } else if (code &gt;= 97 &amp;&amp; code &lt;= 122) {
+            let myCode = code - 96; // make &#39;a&#39; = 1 for modify function
+            return String.fromCharCode(modify(myCode) + 96);
+        } else {
+            return char; // not a letter
+        }
+    }
+
+    function modify(code) {
+        let newCode;
+        if (shiftNum &gt; 0) {
+            // positive shift
+            if (shiftNum &gt; 26 - code) { // do we need to loop?
+                newCode = (code - 26) + (shiftNum % 26); // if need to loop
+            } else {
+                newCode = code + shiftNum;
+            }
+        } else if (shiftNum &lt; 0) {
+            // negative shift
+            if (Math.abs(shiftNum) &gt;= code) { // do we need to loop?
+                newCode = ((code + 26) - (Math.abs(shiftNum) % 26)) % 26; // if need to loop
+            } else {
+                newCode = code + shiftNum;
+            }
+        } else {
+            // if shiftNum is 0
+            newCode = code;
+        }
+        return newCode;
+    }
+
+    return inputStr
+        .split(&quot;&quot;)
+        .map((char) =&gt; prelim(char))
+        .join(&#39;&#39;);
+}
+</code></pre>
+
+</div>
+<script src="prism.js"></script>
+</body>
+</html>
