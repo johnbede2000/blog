@@ -21,7 +21,7 @@
 <p>&quot;Write a function that takes a string to be encoded and a shift factor and then returns the encoded string. The cipher should retain capitalization; should <em>not</em> shift punctuation; the shift should wrap around the alphabet; and negative numbers should work as well.&quot;</p>
 <h2>Maths equation</h2>
 <p>We will use the string method <code>charAt()</code> to return an integer representing the character.</p>
-<p>To make it easier (for me) to think through the maths, let&#39;s assume for now that the code for a = 1, z = 26. I&#39;ll also assume that we&#39;re only dealing with lowercase letters.</p>
+<p>To make it easier to think through the maths, let&#39;s assume for now that the code for a = 1, z = 26. I&#39;ll also assume that we&#39;re only dealing with lowercase letters.</p>
 <p>The crux of the solution is simply <code>answer = input + shift</code>. If the length of the alphabet is <code>length</code> then this simple equation works as long as <code>(input + shift) &lt;= length &amp;&amp; (input + shift) &gt; 0</code>. Otherwise we get a result that&#39;s outside of the range of letters 1-26.</p>
 <p>If <code>(input + shift) &gt; length</code>, the answer is higher than the range of letters. In order to &#39;loop&#39; back to the first number in the range each time we reach the final number, we could e.g. use a <em>while loop</em> which keeps subtracting <code>length</code> for as long as the result is &gt; <code>length</code>.</p>
 <p>Or to achieve the same effect we can use the remainder operator <code>%</code>. So the equation becomes <code>answer = (input + shift) % length</code>. This works for any input with any positive shift.</p>
