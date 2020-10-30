@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width initial-scale=1'>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<link href="prism.css" rel="stylesheet"/>
+<link rel="stylesheet" href="blog-style.css">
+<title>Convert String to Spinal Case</title>
+<meta name="Description" content="Using the replace() method with a Regex to convert a string to spinal case.">
+<meta name="Keywords" content="javascript, string, methods, regex, regular, expression">
+<meta name="author" content="www.johnbe.de">
+</head>
+<body>
+<div class='container'>    
+<h1>Convert String to Spinal Case</h1>
+<p>30/10/20</p>
+<h2>Challenge</h2>
+<p>Convert a string to spinal case: all-lowercase-words-joined-by-dashes. The input string could have lowercase or capitalized words separated by one or more spaces, underscores or one dash; or be in camelcase / upper camelcase.</p>
+<h2>Regex &amp; initial attempt</h2>
+<p>I could use the string method <code>split()</code>, using a separator argument to recognise the beginning of new words, to create an array with individual words as elements. Which I&#39;d later join with dash separators.</p>
+<p>The main challenge here is identifying the beginning of new words. This can be achieved using a Regex. There are a few different scenarios so I&#39;ll use the &#39;or&#39; operator <code>|</code> to catch all of them, using the global tag <code>g</code> to allow multiple matches.</p>
+<ol start='' >
+<li>Match one or more <code>+</code> whitespace <code>\s</code>: <code>/\s+/g</code></li>
+<li>Or one or more underscore (I need to escape <code>\</code> it): now <code>/[\s|\_]+/g</code></li>
+<li>I can leave dashes where they are! (Assuming the input string never includes more than one. If it did I could match for two or more using <code>-{2,}</code>)</li>
+<li>For the start of a new word in camelcase or upper camelcase, I&#39;ll need to use a lookahead <code>(?=)</code> to match a lowercase letter <code>[a-z]</code> that&#39;s followed immediately by a capital letter <code>[A-Z]</code>. Resulting in the regex in total: <code>/[\s|\_]+|[a-z](?=[A-Z])/g</code>.</li>
+
+</ol>
+<p>This is correctly matching the places I want, <em>but</em> unfortunately is resulting in the &#39;lowercase letters immediately followed by a capital letter&#39; to be removed themselves by the split method.</p>
+<h2>Description of my solution</h2>
+<p>Therefore I will use the string method <code>replace()</code> instead of splitting and re-joining, as <code>replace()</code> allows access to the match when specifying the replacement string.</p>
+<ol>
+<li>Whitespaces and underscores can be matched using part of the regex above, and simply replaced by a dash.</li>
+
+</ol>
+<ol start='2' >
+<li>I&#39;ll use another <code>replace()</code> for camel-case. In the first argument, using part of the regex worked out above, I can put the two characters into brackets to create a &#39;capture group&#39;. Then when specifying the replacement string in the second argument I&#39;ll access them with a dollar sign, but this time with a dash inserted in between: <code>.replace(/([a-z])([A-Z])/g, &#39;$1-$2&#39;)</code>.</li>
+
+</ol>
+<ol start='3' >
+<li>The final thing to do is to use the <code>toLowerCase()</code> method, and return the modified string.</li>
+
+</ol>
+<h2>My Solution</h2>
+<pre><code class='language-javascript' lang='javascript'>function spinal(str) {
+    return str.replace(/[\s|\_]+/g, '-')
+        	  .replace(/([a-z])([A-Z])/g, '$1-$2')
+        	  .toLowerCase();
+}
+</code></pre>
+
+</div>
+<script src="prism.js"></script>
+</body>
+</html>
