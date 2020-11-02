@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width initial-scale=1'>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<link href="prism.css" rel="stylesheet"/>
+<link rel="stylesheet" href="blog-style.css">
+<!-- <title>Differences in Arrays</title>
+<meta name="Description" content="How to compare two arrays and return a new array with any items found in one not both.">
+<meta name="Keywords" content="javascript, arrays, compare, differences"> -->
+<meta name="author" content="www.johnbe.de">
+</head>
+<body>
+<div class='container'>    
+
+<h1>Pig Latin</h1>
+<p>02/11/20</p>
+<h2>Challenge</h2>
+<p>Pig Latin is a way of altering English Words.</p>
+<ul>
+<li>If a word begins with a consonant, take the first consonant or consonant cluster, move it to the end of the word, and add &quot;ay&quot; to it.</li>
+<li>If a word begins with a vowel, just add &quot;way&quot; at the end.</li>
+
+</ul>
+<p>Translate the provided string to Pig Latin. Input strings are guaranteed to be English words in all lowercase.</p>
+<h2>Description of first solution</h2>
+<p>I will convert the string into an array of individual words by using <code>split()</code> and using whitespace as the separator.</p>
+<p>I can then iterate through each word to deal with one at a time, using <code>forEach()</code>. I will pass each word into a function.</p>
+<p>The function will use an <code>if</code> statement to test to see if the word begins with a vowel. It will do this by checking whether the first character of the word can be matched with any of the elements in an array listing vowels: <code>vowels.indexOf(wordStr[0]) == -1</code>.</p>
+<p>If the word doesn&#39;t begin with a vowel then it must begin with a consonant. I want to be able to select all the consonants at the beginning of the word, up until the first vowel found. And split the string word at that point. I can find the index of the first vowel using <code>findIndex</code>. I can then use this index as the argument for <code>splice</code>. I will then <code>concat</code> the two bits back together in reversed order to create the pig Latin version of the word.</p>
+<p>If the word does begin with a vowel then the pig Latin version of the word will be word + &#39;way&#39;, which I can achieve using <code>concat()</code>.</p>
+<p>The pig Latin version of the word can be pushed to a new array. Once all words have been pushed, the new array can be joined into a string and returned.</p>
+<h2>First solution</h2>
+<pre><code class='language-javascript' lang='javascript'>function translatePigLatin(str) {
+	let strArr = str.split(&#39; &#39;);
+    let pigArr = [];
+    
+    function translatePigWord(word) {
+        let vowels = [&#39;a&#39;, &#39;e&#39;, &#39;i&#39;, &#39;o&#39;, &#39;u&#39;,];
+        if (vowels.indexOf(word[0]) == -1) { // begins with consonant
+            let index = word.search(/a|e|i|o|u/); // find index of first vowel
+            let firstHalf = word.slice(0, index); // split the word into two
+            let secondHalf = word.slice(index);
+            pigArr.push(secondHalf + firstHalf + &#39;ay&#39;); // push the second half + first half
+        } else { // begins with vowel
+            pigArr.push(word + &#39;way&#39;);
+        }
+    }
+    
+    strArr.forEach(word =&gt; translatePigWord(word));
+    return pigArr.join(&#39; &#39;);
+}
+</code></pre>
+<h2>Bug: no vowels in word</h2>
+<p>My solution worked, except didn&#39;t handle the situation that no vowels are found at all e.g. &#39;rhythm&#39;.</p>
+<p>I&#39;ll add in another if else statement. The test will be if every character in the word is not listed in the array of vowels. Therefore I&#39;ll create an array of the word characters to easily iterate through them. If the test is true, I want the word to stay the same except for &#39;ay&#39; being added to the end.</p>
+<h2>Final solution</h2>
+<pre><code class='language-javascript' lang='javascript'>function translatePigLatin(str) {
+	let strArr = str.split(&#39; &#39;);
+    let pigArr = [];
+    
+    function translatePigWord(word) {
+        let vowels = [&#39;a&#39;, &#39;e&#39;, &#39;i&#39;, &#39;o&#39;, &#39;u&#39;,];
+        let wordArr = [...word];
+        if (wordArr.every(char =&gt; vowels.indexOf(char) == -1)) { // no vowel at all
+            pigArr.push(word + &#39;ay&#39;);
+        } else if (vowels.indexOf(word[0]) == -1) { // vowel but not first character
+            let index = word.search(/a|e|i|o|u/);
+            let firstHalf = word.slice(0, index);
+            let secondHalf = word.slice(index);
+            pigArr.push(secondHalf + firstHalf + &#39;ay&#39;);
+        } else { // begins with vowel
+            pigArr.push(word + &#39;way&#39;);
+        }
+    }
+    
+    strArr.forEach(word =&gt; translatePigWord(word));
+    return pigArr.join(&#39; &#39;);
+}
+</code></pre>
+
+
+</div>
+<script src="prism.js"></script>
+</body>
+</html>
