@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width initial-scale=1'>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<link href="prism.css" rel="stylesheet"/>
+<link rel="stylesheet" href="blog-style.css">
+<title>Smallest Common Multiple</title>
+<meta name="Description" content="Find the smallest multiple of a range of numbers.">
+<meta name="Keywords" content="javascript, arrays, loop, remainder">
+<meta name="author" content="www.johnbe.de">
+</head>
+<body>
+<div class='container'>    
+
+<h1>Smallest Common Multiple</h1>
+<p>05/11/20</p>
+<h2>Challenge</h2>
+<p>Find the smallest common multiple of the provided parameters that can be evenly divided by both, as well as by all sequential numbers in the range between these parameters. The range will be an array of two numbers that will not necessarily be in numerical order.</p>
+<p>For example, if given 1 and 3, find the smallest common multiple of both 1 and 3 that is also evenly divisible by all numbers <em>between</em> 1 and 3. The answer here would be 6.</p>
+<h2>My Solution</h2>
+<pre><code class='language-javascript' lang='javascript'>function smallestCommons(arr) {
+    // create an array of the all sequential numbers in the range
+    arr.sort((a, b) =&gt; a - b);
+    let range = [];
+    for (let num=arr[0]; num&lt;=arr[1]; num++) {
+    range.push(num);
+    }
+
+    let highest = range[range.length-1]; // or just arr[1]
+    let answer = highest; // preliminary answer for the time being
+    
+    for (let i=range.length-1; i&gt;=0; i--) {
+    if (answer % range[i] !== 0) {
+        answer += highest;
+        i=range.length-1;
+    }
+    }
+    return answer;
+}
+</code></pre>
+<h2>Description of my solution</h2>
+<p>I&#39;ve created an array with all sequential numbers in the range between the two numbers. If, for example, the <code>arr</code> passed in was <code>[1,5]</code>, then <code>range = [1,2,3,4,5]</code>.</p>
+<p>To start with let&#39;s assume that no calculations are necessary, and that in fact the highest number in the range can be evenly divided by all the other numbers. So for now, our preliminary <code>answer</code> is simply the highest number 5.</p>
+<p>Now we test this: can this preliminary answer be evenly divided by (the last element in the range array 5)? Obviously it can, because at the moment they&#39;re the same number. So the code in the curly brackets isn&#39;t executed, and we now test this preliminary answer with the next element in the range array working backwards: can this answer 5 be evenly divided by 4? No, so in this case we change our preliminary answer forevermore to the next multiple of the highest number. So now our preliminary answer for all future tests (until we change it again) is 10.</p>
+<p>Can this answer be divided by the last element in range? Yes. Can it be evenly divided by the next element to the left (4)? No. So change our preliminary answer to the next multiple.</p>
+<p>This process continues until we have an answer that is evenly divided by all elements in range. At that point the loop exits because it doesn&#39;t test further than the [0] element in range.</p>
+<p>The answer is returned.</p>
+
+</div>
+<script src="prism.js"></script>
+</body>
+</html>
