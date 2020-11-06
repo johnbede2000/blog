@@ -30,14 +30,14 @@
       </p>
       <h2>Solution</h2>
       <pre><code class='language-javascript' lang='javascript'>function flattenNested(arr) {
-let answer = [];
+    let answer = [];
 
-function flatten(current) {
-    if (!Array.isArray(current)) {
-        answer.push(current);
-    } else {
-        current.forEach((elem) => flatten(elem));
-    }
+    function flatten(current) {
+        if (!Array.isArray(current)) {
+            answer.push(current);
+        } else {
+            current.forEach((elem) => flatten(elem));
+        }
 }
 
 arr.forEach((elem) => flatten(elem));
