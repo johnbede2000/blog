@@ -38,29 +38,28 @@
         } else {
             current.forEach((elem) => flatten(elem));
         }
-}
+    }   
 
-arr.forEach((elem) => flatten(elem));
-return answer;
+    arr.forEach((elem) => flatten(elem));
+    return answer;
 }</code></pre>
       <h2>Solution</h2>
       <p>
         This function <code>flattenNested</code> assumes that the argument
         passed into it will always be an array - not necessarily a nested array,
-        but certainly an array. (Otherwise line 4 won&#39;t work.)
+        but certainly an array. (Otherwise the <code>forEach()</code> called on it won&#39;t work.)
       </p>
       <p>
         Initialize an empty array <code>answer</code> to hold the flattened
         elements.
       </p>
       <p>
-        One at a time <code>forEach()</code>, pass the elements of the array
-        passed into <code>flattenNested</code>, <code>arr</code>, into the
+        One at a time (using <code>forEach()</code>), pass the elements of the array <code>arr</code>, that was passed into <code>flattenNested</code>, into the
         function <code>flatten</code>. This tests whether the element passed
         into it is also an array. If it is, then one at a time check whether any
         of <em>its</em> element are arrays by recursively passing them into
         <code>flatten</code>... And so on, until it comes across an element that
-        isn&#39;t an array, and so pushes it into the <code>answer</code> array.
+        isn&#39;t an array, and so pushes that into the <code>answer</code> array.
         The function <code>flatten</code> doesn&#39;t return anything, so
         nothing gets passed back up the chain of recursive function calls.
       </p>
