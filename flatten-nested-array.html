@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link href="prism.css" rel="stylesheet" />
+    <link rel="stylesheet" href="blog-style.css" />
+    <title>Flatten a Nested Array</title>
+    <meta
+      name="Description"
+      content="How to flatten a nested array, accounting for different layers of nesting."
+    />
+    <meta name="Keywords" content="javascript, arrays, nested, recursion" />
+    <meta name="author" content="www.johnbe.de" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Flatten Nested Arrays</h1>
+      <p>06/11/20</p>
+      <h2>Challenge</h2>
+      <p>
+        Flatten a nested array (without using the
+        <code>Array.prototype.flat()</code> or
+        <code>Array.prototype.flatMap()</code> methods). You must account for
+        varying levels of nesting.
+      </p>
+      <h2>Solution</h2>
+      <pre><code class='language-javascript' lang='javascript'>function flattenNested(arr) {
+let answer = [];
+
+function flatten(current) {
+    if (!Array.isArray(current)) {
+        answer.push(current);
+    } else {
+        current.forEach((elem) => flatten(elem));
+    }
+}
+
+arr.forEach((elem) => flatten(elem));
+return answer;
+}</code></pre>
+      <h2>Solution</h2>
+      <p>
+        This function <code>flattenNested</code> assumes that the argument
+        passed into it will always be an array - not necessarily a nested array,
+        but certainly an array. (Otherwise line 4 won&#39;t work.)
+      </p>
+      <p>
+        Initialize an empty array <code>answer</code> to hold the flattened
+        elements.
+      </p>
+      <p>
+        One at a time <code>forEach()</code>, pass the elements of the array
+        passed into <code>flattenNested</code>, <code>arr</code>, into the
+        function <code>flatten</code>. This tests whether the element passed
+        into it is also an array. If it is, then one at a time check whether any
+        of <em>its</em> element are arrays by recursively passing them into
+        <code>flatten</code>... And so on, until it comes across an element that
+        isn&#39;t an array, and so pushes it into the <code>answer</code> array.
+        The function <code>flatten</code> doesn&#39;t return anything, so
+        nothing gets passed back up the chain of recursive function calls.
+      </p>
+      <p>And finally return <code>answer</code>.</p>
+    </div>
+    <script src="prism.js"></script>
+  </body>
+</html>
