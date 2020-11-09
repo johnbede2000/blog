@@ -1,0 +1,129 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width initial-scale=1'>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<link href="prism.css" rel="stylesheet"/>
+<link rel="stylesheet" href="blog-style.css">
+<title>Roman Numeral Converter</title>
+<meta name="Description" content="A JavaScript function to convert decimal numbers into roman numerals.">
+<meta name="Keywords" content="javascript, if statements, roman numerals, convert">
+<meta name="author" content="www.johnbe.de">
+</head>
+<body>
+<div class='container'>    
+
+<h1>Roman numerals</h1>
+<p>09/11/20</p>
+<h2>Final refactored solution</h2>
+<pre><code class='language-javascript' lang='javascript'>function convertToRoman(num) {    
+    let thousands = Math.floor(num/1000);
+    let hundreds = Math.floor((num - (1000*thousands))/100);
+    let tens = Math.floor((num-(1000*thousands)-(100*hundreds))/10);
+    let ones = num % 10;
+
+    function createPart(num,pure,half,next) {
+        if (num &gt;=1 &amp;&amp; num &lt;= 3) {
+            return pure.repeat(num);
+        } else if (num == 4) {
+            return pure + half;
+        } else if (num == 5) {
+            return half;
+        } else if (num &gt;=6 &amp;&amp; num &lt;=8) {
+            return half + pure.repeat(num-5);
+        } else if (num == 9) {
+            return pure + next;
+        }
+    }
+
+    let answer = &#39;&#39;;
+    if (thousands &gt;= 1) {
+        answer += &#39;M&#39;.repeat(thousands);
+    }
+    if (hundreds &gt;= 1) {
+        answer += createPart(hundreds, &#39;C&#39;, &#39;D&#39;, &#39;M&#39;);
+    }
+    if (tens &gt;= 1) {
+        answer += createPart(tens, &#39;X&#39;, &#39;L&#39;, &#39;C&#39;);
+    }
+    if (ones &gt;= 1) {
+        answer += createPart(ones, &#39;I&#39;,&#39;V&#39;,&#39;X&#39;);
+    }
+    return answer;
+}
+</code></pre>
+<h2>Initial long solution</h2>
+<pre><code class='language-javascript' lang='javascript'>function convertToRoman(num) {
+    let romanNumerals = {
+    1: &#39;I&#39;, 
+    4: &#39;IV&#39;, 
+    5: &#39;V&#39;, 
+    9: &#39;IX&#39;, 
+    10: &#39;X&#39;, 
+    40: &#39;XL&#39;, 
+    50: &#39;L&#39;, 
+    90: &#39;XC&#39;, 
+    100: &#39;C&#39;, 
+    400: &#39;CD&#39;, 
+    500: &#39;D&#39;, 
+    900: &#39;CM&#39;, 
+    1000: &#39;M&#39;,};
+    
+    let thousands = Math.floor(num/1000);
+    let hundreds = Math.floor((num - (1000*thousands))/100);
+    let tens = Math.floor((num-(1000*thousands)-(100*hundreds))/10);
+    let ones = num % 10;
+    
+    let answer = &#39;&#39;;
+    // thousands
+    if (thousands &gt;=1) {
+        answer += romanNumerals[1000].repeat(thousands);
+    };
+
+    // hundreds
+    if (hundreds &gt;=1 &amp;&amp; hundreds &lt;= 3){
+        answer += romanNumerals[100].repeat(hundreds);
+    } else if (hundreds == 4) {
+        answer += romanNumerals[400];
+    } else if (hundreds == 5) {
+        answer += romanNumerals[500];
+    } else if (hundreds &gt;= 6 &amp;&amp; hundreds &lt;= 8) {
+        answer += romanNumerals[500] + romanNumerals[100].repeat(hundreds-5);
+    } else if (hundreds == 9) {
+        answer += romanNumerals[900];
+    }
+
+    // tens
+    if (tens &gt;= 1 &amp;&amp; tens &lt;= 3) {
+        answer += romanNumerals[10].repeat(tens);
+    } else if (tens == 4) {
+        answer += romanNumerals[40];
+    } else if (tens == 5) {
+        answer += romanNumerals[50]; 
+    } else if (tens &gt;=6 &amp;&amp; tens &lt;= 8) {
+        answer += romanNumerals[50] + romanNumerals[10].repeat(tens-5);
+    } else if (tens == 9) {
+        answer += romanNumerals[90];
+    }
+
+    // ones
+    if (ones &gt;= 1 &amp;&amp; ones &lt;= 3) {
+        answer += romanNumerals[1].repeat(ones);
+    } else if (ones == 4) {
+        answer += romanNumerals[4];
+    } else if (ones == 5) {
+        answer += romanNumerals[5];
+    } else if (ones &gt;=6 &amp;&amp; ones &lt;=8) {
+        answer += romanNumerals[5] + romanNumerals[1].repeat(ones-5);
+    } else if (ones == 9) {
+        answer += romanNumerals[9];
+    }
+    return answer;
+}
+</code></pre>
+
+</div>
+<script src="prism.js"></script>
+</body>
+</html>
