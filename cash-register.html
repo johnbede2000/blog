@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width initial-scale=1'>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<link href="prism.css" rel="stylesheet"/>
+<link rel="stylesheet" href="blog-style.css">
+<title>Cash Register</title>
+<meta name="Description" content="A function to work out what types of coins to give as change.">
+<meta name="Keywords" content="javascript, arrays, functions, cash register">
+<meta name="author" content="www.johnbe.de">
+</head>
+<body>
+<div class='container'>    
+
+<h1>Cash register</h1>
+<p>11/11/20</p>
+<h2>Challenge</h2>
+<p>See freeCodeCamp - <a href='https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/javascript-algorithms-and-data-structures-projects/cash-register'>Cash Register</a></p>
+<h2>My solution: with the one remaining bug! (solved below)</h2>
+<pre><code class='language-javascript' lang='javascript'>function checkCashRegister(price, cash, cid) {
+    price=Math.round(price * 100);
+    cash=Math.round(cash*100);
+    cid.forEach(elem =&gt; elem[1] = Math.round(elem[1]*100));
+    let changeDue = cash - price;
+    let cidSUM = cid.reduce((sum, current) =&gt; {
+    return sum + (current[1]);
+        }, 0);
+
+    function calculateChangeTypes(cid, changeDue) {
+    let functionChangeDue = changeDue; // here fixed using external variable
+    let changeReturned = [];
+    let types = {
+        PENNY: 1,
+        NICKEL: 5,
+        DIME: 10,
+        QUARTER: 25,
+        ONE: 100,
+        FIVE: 500,
+        TEN: 1000,
+        TWENTY: 2000,
+        &#39;ONE HUNDRED&#39;: 10000,
+    }
+    let reversed = [...cid].reverse(); // here fixed using reverse()
+        
+    reversed.forEach(elem =&gt; {
+        let typeName = elem[0];
+        let typeValue = types[typeName];
+        let pushThis = [typeName, 0];
+
+        for (let leftInDrawer = elem[1]; functionChangeDue &gt;= typeValue &amp;&amp; leftInDrawer &gt;= typeValue; leftInDrawer -= typeValue) {
+            pushThis[1] += typeValue; 
+            functionChangeDue -= typeValue;
+        } changeReturned.push(pushThis)
+    });
+
+    if (functionChangeDue &gt; 0) {
+        return &#39;insufficient&#39;;
+    } else {
+        changeReturned=changeReturned.filter(elem =&gt; elem[1]&gt;0);
+        changeReturned.forEach(elem =&gt; elem[1]/=100);
+        return changeReturned;
+    }
+    }
+
+    let answer = {
+    status: &#39;&#39;,
+    change: [],
+    };
+
+    if (cidSUM &lt; changeDue || calculateChangeTypes(cid,changeDue) == &#39;insufficient&#39;) {
+        answer.status = &#39;INSUFFICIENT_FUNDS&#39;;
+    } else if (cidSUM == changeDue) {
+        answer.status = &#39;CLOSED&#39;;
+        answer.change.push(...cid); // bug found here!
+    } else {
+    answer.status = &#39;OPEN&#39;;
+    answer.change = calculateChangeTypes(cid,changeDue);
+    }
+    return answer;
+}
+</code></pre>
+<h2>Looking through line by line</h2>
+<p>First I&#39;ve converted all the values entered as arguments into pennies with no floating points, as JS behaves in unexpected ways with decimals (due to using a binary system natively).</p>
+<p>I&#39;ve declared a new variable <code>changeDue</code> which is the <em>total</em> due, as opposed to the array of exact types of coins that will be returned in the answer object.</p>
+<p>I&#39;ve declared a new variable <code>cidSUM</code> which is the sum of all types of coins in the drawer.</p>
+<p>I&#39;ve set up the answer object, empty for now.</p>
+<p>If the sum of coins in the drawer is less than the total change due then answer status will be &#39;insufficient funds&#39;.</p>
+<p>Likewise if running the function (that calculates how many of each coin to return) finds that there isn&#39;t the correct amount of particular coins in the drawer needed to be able to return exact change, the answer status will be &#39;insufficient funds&#39;. Bear in mind that the function is run at this point! To make the check. And therefore <strong>it mustn&#39;t alter any originals</strong>! Make copies of everything. For example don&#39;t use reverse() on the original. And use a copied variable <code>functionChangeDue</code>. (But also move this inside the one call of the function? Or no, it shouldn&#39;t matter because the next time it runs is a fresh start.)</p>
+<p>Or if neither of these cases apply, and the total amount in the drawer is actually the exact mount due, then the answer status will be closed, and the answer object will contain all the elements from <code>cid</code>.</p>
+<p>Or if none of the above cases apply, then logically we must have enough coins in the drawer and enough of the correct types to be able to give exact change. And we don&#39;t need to give the entire contents of the drawer, so we&#39;ll run the function:</p>
+<p>The function declares an internal copy of changeDue so that it can use it and modify it without modifying the original. It sets up the array that will hold the necessary coins. And declares an object holding the value of each type of coin name (again, in pennies with no floating points). It makes a copy of cid and reverses it because we want to use larger notes/coins first.</p>
+<p>Now for each type of note/coin available in the drawer, starting with the largest: we start with a certain amount of that type in the drawer. Keep 1) adding one of these coins to the change returned info, 2) removing this value from the running total of change still due, and 3) removing that value from the amount left in the drawer. Keep doing this, until the total amount due back to the customer is less than the value of one of this type of coin/note, or until there are none of this type left in the drawer. At that point push the info to the <code>changeReturned</code> array and move to the next type of coin (smaller), and do the same loop.</p>
+<p>After looping through all coins, if there is still money owed to the customer (i.e. there weren&#39;t the correct types of coins needed to give exact change) then return &#39;insufficient&#39;. Otherwise filter the coins to remove any that we&#39;re returning zero of. And for those left, divide by 100 to get back to decimal number. The answer change is given the value of this returned array. And finally the answer object is returned. Can&#39;t see a bug yet so will look at the test that&#39;s failing.</p>
+<h2>Failing test</h2>
+<pre><code class='language-javascript' lang='javascript'>checkCashRegister(19.5, 20, [[&quot;PENNY&quot;, 0.5], 
+                                [&quot;NICKEL&quot;, 0], 
+                                [&quot;DIME&quot;, 0], 
+                                [&quot;QUARTER&quot;, 0], 
+                                [&quot;ONE&quot;, 0], 
+                                [&quot;FIVE&quot;, 0], 
+                                [&quot;TEN&quot;, 0], 
+                                [&quot;TWENTY&quot;, 0], 
+                                [&quot;ONE HUNDRED&quot;, 0]])
+</code></pre>
+<p>Should return:</p>
+<pre><code class='language-javascript' lang='javascript'>{status: &quot;CLOSED&quot;, change: [[&quot;PENNY&quot;, 0.5], 
+                            [&quot;NICKEL&quot;, 0], 
+                            [&quot;DIME&quot;, 0], 
+                            [&quot;QUARTER&quot;, 0], 
+                            [&quot;ONE&quot;, 0], 
+                            [&quot;FIVE&quot;, 0], 
+                            [&quot;TEN&quot;, 0], 
+                            [&quot;TWENTY&quot;, 0], 
+                            [&quot;ONE HUNDRED&quot;, 0]]}
+</code></pre>
+<p>But my function is returning:</p>
+<pre><code class='language-javascript' lang='javascript'>{ status: &#39;CLOSED&#39;,
+    change: 
+    [ [ &#39;PENNY&#39;, 50 ],
+        [ &#39;NICKEL&#39;, 0 ],
+        [ &#39;DIME&#39;, 0 ],
+        [ &#39;QUARTER&#39;, 0 ],
+        [ &#39;ONE&#39;, 0 ],
+        [ &#39;FIVE&#39;, 0 ],
+        [ &#39;TEN&#39;, 0 ],
+        [ &#39;TWENTY&#39;, 0 ],
+        [ &#39;ONE HUNDRED&#39;, 0 ] ] }
+</code></pre>
+<p>This is just because it&#39;s returning the original <code>cid</code> which is still multiplied by 100! An easy fix: add this one line <code>cid.forEach(elem =&gt; elem[1]/=100);</code></p>
+<p><strong>SOLVED</strong>.</p>
+<p>Link to freeCodeCamp &#39;JavaScript Algorithms and Data Structures&#39; Developer Certificate: <a href='https://www.freecodecamp.org/certification/johnbede/javascript-algorithms-and-data-structures'>here</a></p>
+
+</div>
+<script src="prism.js"></script>
+</body>
+</html>
